@@ -6,12 +6,16 @@ import prisma from '../config/prisma.js';
  */
 export const getAllProducts = async (req, res, next) => {
   try {
-    const { categoryId, minPrice, maxPrice, inStock } = req.query;
+    const { categoryId, brandId, minPrice, maxPrice, inStock } = req.query;
 
     const where = {};
 
     if (categoryId !== undefined) {
       where.categoryId = Number(categoryId);
+    }
+
+    if (brandId !== undefined) {
+      where.brandId = Number(brandId);
     }
 
     if (minPrice !== undefined || maxPrice !== undefined) {
@@ -33,7 +37,8 @@ export const getAllProducts = async (req, res, next) => {
             id: true,
             name: true
           }
-        }
+        },
+        brand: true
       },
       orderBy: {
         createdAt: 'desc'
@@ -80,7 +85,7 @@ export const getProductById = async (req, res, next) => {
  */
 export const createProduct = async (req, res, next) => {
   try {
-    const { name, description, price, stock, sku, isAvailable, categoryId } = req.body;
+    const { name, description, price, stock, sku, isAvailable, categoryId, brandId } = req.body;
 
     // 1. Verificar si la categoría existe antes de asociarla
     const categoryExists = await prisma.category.findUnique({
@@ -102,7 +107,8 @@ export const createProduct = async (req, res, next) => {
         stock,
         sku,
         isAvailable: isAvailable ?? true,
-        categoryId
+        categoryId,
+        brandId
       },
       include: {
         category: true

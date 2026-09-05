@@ -7,6 +7,7 @@ import {
   deleteProduct
 } from '../controllers/product.controller.js';
 import { validate } from '../middlewares/validate.middleware.js';
+import reviewRoutes from './review.routes.js';
 import {
   createProductSchema,
   updateProductSchema,
@@ -22,5 +23,6 @@ router.get('/:id', validate(productIdParamSchema, 'params'), getProductById);
 router.post('/', validate(createProductSchema, 'body'), createProduct);
 router.put('/:id', validate(productIdParamSchema, 'params'), validate(updateProductSchema, 'body'), updateProduct);
 router.delete('/:id', validate(productIdParamSchema, 'params'), deleteProduct);
+router.use('/:id/reviews', reviewRoutes);
 
 export default router;

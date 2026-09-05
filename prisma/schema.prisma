@@ -21,6 +21,17 @@ model Category {
   @@map("categories")
 }
 
+// Modelo de Marca
+model Brand {
+  id       Int       @id @default(autoincrement())
+  name     String    @unique @db.VarChar(80)
+  country  String?   @db.VarChar(60)
+  website  String?   @db.VarChar(200)
+  products Product[]
+
+  @@map("brands")
+}
+
 // Modelo de Producto
 model Product {
   id          Int      @id @default(autoincrement())
@@ -36,6 +47,21 @@ model Product {
   // Relación N:1 con Categoría (Cada producto pertenece a una categoría)
   categoryId  Int
   category    Category @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  brandId     Int?
+  brand       Brand?   @relation(fields: [brandId], references: [id], onDelete: SetNull)
+  reviews     Review[]
 
   @@map("products")
+}
+
+// Modelo de Reseña
+model Review {
+  id        Int      @id @default(autoincrement())
+  author    String   @db.VarChar(100)
+  rating    Int
+  comment   String   @db.VarChar(500)
+  productId Int
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("reviews")
 }
